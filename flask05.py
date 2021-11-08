@@ -116,12 +116,25 @@ def delete_note() :
     return redirect(url_for('get_notes'))
 
 
-@app.route('/notes/edit/<note_id>')
+@app.route('/notes/edit/<note_id>' , methods = ['GET' , 'POST'])
 def update_note(note_id) :
-    a_user = db.session.query(Note).filter_by(email = "mogli@uncc.edu").one()
-    my_note = db.session.query(Note).filter_by(id = note_id).one()
+    if request.method == "POST":
+     title = request.form['title']
+     text = request.form['noteText']
+     note = db.session.query(Note).filter_by(id = note_id).one()
+     note.title = title
+     note.text = text
+     db.session.add(note)
+     db.session.commit()
 
-    return render_template('new html', note = my_note, user = a_user)
+    return redirect(url_for('get_notes'))
+   else :
+
+a_user = db.session.query(Note).filter_by(email = "mogli@uncc.edu").one()
+my_note = db.session.query(Note).filter_by(id = note_id).one()
+
+
+
 
 app.run(host=os.getenv('IP', '127.0.0.1'), port=int(os.getenv('PORT', 5000)), debug=True)
 
