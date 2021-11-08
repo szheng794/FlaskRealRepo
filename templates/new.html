@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="UNCC Notes App">
+        <meta nameee="description" content="UNCC Notes App">
         <title>UNCC Notes App - New Note</title>
         <!-- styles -->
         <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
@@ -12,13 +12,36 @@
             <a href = "{{url_for('index')}}"> Home</a> || <a href = "{{ url_for('get_notes') }}"> My Notes </a>
         </nav>
 
-    <body>
+        {% if note %}
+            <form action = "{{url_for('update_note', note_id = note.id)}}" method = "post">
+        {% else %}
+        <form action = "new" method = "post">
+            {% endif %}
+
+
 
         <h1>Welcome {{user.name}} to the 49er Notes App!</h1>
-        <form action="new" method="post">
-           <p><label>Title </label></p><p>  <input type="text" name="title"/></p>
-            <p><label>Note </label></p><p><textarea name="noteText"  rows="6" cols="0" >Add your new note here ...</textarea></p>
-            <p><input type="submit" value="Add Note"/></p>
+        <p action="new" method="post">
+           <p><label>Title </label></p>
+           <p> <input type="text" name="title" value = "{% if note %}{{note.title}} {% endif %}"/></p>
+            <p><label>Note </label></p>
+            <p>
+                <textarea name="noteText"  rows="6" cols="0" >
+                    {% if note %}
+                        {{note.text}}
+                   {% else %}
+                    Add your new note here ...
+                {% endif %}
+            </textarea>
+            </p>
+            <p>
+
+                {% if note %}
+                    <input type = "submit" value = "Update Note">
+                {% else %}
+             <input type="submit" value= "Add Note"/>
+            {% endif %}
+        </p>
         </form>
-    </body>
+            </form>
 </html>
