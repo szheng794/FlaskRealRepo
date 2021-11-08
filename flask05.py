@@ -23,7 +23,6 @@ with app.app_context():
     db.create_all()
 
 
-
 # @app.route is a decorator. It gives the function "index" special powers.
 # In this case it makes it so anyone going to "your-url/" makes this function
 # get called. What it returns is what is shown as the web page
@@ -37,15 +36,13 @@ def index():
 
 @app.route('/notes')
 def get_notes():
-
     a_user = db.session.query(User).filter_by(email='mogli@uncc.edu').one()
     my_notes = db.session.query(Note).all()
-    return render_template('notes.html', notes=my_notes,  user=a_user)
+    return render_template('notes.html', notes=my_notes, user=a_user)
 
 
 @app.route('/notes/<note_id>')
 def get_note(note_id):
-
     my_note = db.session.query(Note).filter_by(id=note_id).one()
 
     a_user = db.session.query(User).filter_by(email='mogli@uncc.edu').one()
@@ -55,7 +52,6 @@ def get_note(note_id):
 
 @app.route('/notes/new', methods=['GET', 'POST'])
 def new_note():
-
     print('request method is', request.method)
     if request.method == 'POST':
         title = request.form['title']
@@ -72,15 +68,15 @@ def new_note():
         a_user = db.session.query(User).filter_by(email='mogli@uncc.edu').one()
         return render_template('new.html', user=a_user)
 
-@app.route('/notes/edit/<note_id>', methods = ['GET' , 'POST'])
-def update_note(note_id):
-      if request.method == 'POST':
 
+@app.route('/notes/edit/<note_id>', methods=['GET', 'POST'])
+def update_note(note_id):
+    if request.method == 'POST':
         title = request.form['title']
 
         text = request.form['noteText']
 
-        note = db.session.query(Note).filter_by(id = note_id).one()
+        note = db.session.query(Note).filter_by(id=note_id).one()
 
         note.title = title
 
@@ -90,14 +86,20 @@ def update_note(note_id):
 
         db.session.commit()
 
+        a_user = db.session.query(User).filter_by(email='mogli@uncc.edu').one()
 
-        a_user = db.session.query(User).filter_by(email= 'mogli@uncc.edu').one()
+        my_note = db.session.query(Note).filter_by(id=note_id).one()
 
-        my_note = db.session.query(Note).filter_by(id = note_id).one()
-
-        return render_template('new.html', note = my_note, user = a_user)
+        return render_template('new.html', note=my_note, user=a_user)
 
 
+@app.route('/notes/delete/<note_id>')
+def delete_note(note_id):
+    my_note = db.session.query(Note).filter_by(id=note_id).one()
+    db.session.delete(my_note)
+    db.session.commit()
+
+    return redirect(url_for('get_notes'))
 
 app.run(host=os.getenv('IP', '127.0.0.1'), port=int(os.getenv('PORT', 5000)), debug=True)
 
