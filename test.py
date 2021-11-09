@@ -13,18 +13,18 @@ class FlaskTest(unittest.TestCase):
         response = requests.get("http://127.0.0.1:5000/notes")
         statuscode = response.status_code
         self.assertEqual(statuscode, 200)
-        self.assertEqual('Title' and 'Date' in response.text, True)
+        self.assertEqual('<h2>Use this site to maintain and organize your notes.</h2>' and 'Title' and 'Date' in response.text, True)
 
     def test_note(self):
         response = requests.get("http://127.0.0.1:5000/notes/1")
         statuscode = response.status_code
         self.assertEqual(statuscode, 200)
-        self.assertEqual('First Note' in response.text, True)
+        self.assertEqual('<h2>Use this site to maintain and organize your notes.</h2>' and 'First Note' in response.text, True)
 
     def test_new(self):
         response = requests.get("http://127.0.0.1:5000/notes/new")
         statuscode = response.status_code
-        self.assertEqual(statuscode, 200)
+        self.assertEqual(statuscode, 200, True)
         self.assertEqual('<form action="new" method="post">' in response.text, True)
 
     def test_delete(self):
